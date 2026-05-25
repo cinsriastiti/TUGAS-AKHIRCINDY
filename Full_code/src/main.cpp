@@ -30,7 +30,9 @@ float elc, pha, temp, humid;
 bool deviceConnected = false;
 int mode = 0;
 bool done = false, zero_npk = false, sensor_nopower = false;
-
+bool same_value = false;
+int prev_nit = -1, prev_pho = -1, prev_pot = -1;
+float prev_elc = -1, prev_pha = -1, prev_temp = -1, prev_humid = -1;
 int i = 0;
 
 extern void score(double *input, double *output);
@@ -38,7 +40,6 @@ extern void score(double *input, double *output);
 double input_data[7];
 double output[7];
 void predict_proba(float *x, float *proba);
-
 
 class ServerCallbacks : public BLEServerCallbacks
 {
@@ -196,6 +197,7 @@ void loop()
         zero_npk = false;
         sensor_nopower = false;
         done = false;
+        same_value = false;
         i = 0;
         nit_mean = 0;
         pho_mean = 0;
@@ -204,6 +206,14 @@ void loop()
         humid_mean = 0;
         pha_mean = 0;
         elc_mean = 0;
+
+        prev_nit = -1;
+        prev_pho = -1;
+        prev_pot = -1;
+        prev_elc = -1;
+        prev_pha = -1;
+        prev_temp = -1;
+        prev_humid = -1;
     }
 
     if (mode == 1)
@@ -318,6 +328,14 @@ void loop()
                 Serial.println("0 sent");
                 zero_npk = true;
                 sensor_nopower = false;
+                same_value = false;
+                prev_nit = -1;
+                prev_pho = -1;
+                prev_pot = -1;
+                prev_elc = -1;
+                prev_pha = -1;
+                prev_temp = -1;
+                prev_humid = -1;
             }
         }
         else if ((nit > 2000) || (pho > 2000) || (pot > 2000) || (pha > 2000) || (temp > 2000) || (humid > 2000))
@@ -331,6 +349,14 @@ void loop()
                 Serial.println("Sensor disconnected");
                 zero_npk = false;
                 sensor_nopower = true;
+                same_value = false;
+                prev_nit = -1;
+                prev_pho = -1;
+                prev_pot = -1;
+                prev_elc = -1;
+                prev_pha = -1;
+                prev_temp = -1;
+                prev_humid = -1;
             }
         }
         else
@@ -338,12 +364,38 @@ void loop()
             zero_npk = false;
             sensor_nopower = false;
 
-            String data = String(nit) + "," + String(pho) + "," + String(pot) + "," +
-                          String(elc) + "," + String(pha) + "," + String(temp) + "," +
-                          String(humid);
-            pCharacteristic->setValue(data.c_str());
-            pCharacteristic->notify();
-            Serial.println(data);
+            if (nit == prev_nit && pho == prev_pho && pot == prev_pot &&
+                elc == prev_elc && pha == prev_pha && abs(temp - prev_temp) < 0.5 && abs(humid - prev_humid) < 3.0)
+            {
+                if (!same_value)
+                {
+                    String data = String(nit) + "," + String(pho) + "," + String(pot) + "," +
+                                  String(elc) + "," + String(pha) + "," + String(temp) + "," +
+                                  String(humid);
+                    pCharacteristic->setValue(data.c_str());
+                    pCharacteristic->notify();
+                    Serial.println(data);
+                    same_value = true;
+                }
+            }
+            else
+            {
+                same_value = false;
+                prev_nit = nit;
+                prev_pho = pho;
+                prev_pot = pot;
+                prev_elc = elc;
+                prev_pha = pha;
+                prev_temp = temp;
+                prev_humid = humid;
+
+                String data = String(nit) + "," + String(pho) + "," + String(pot) + "," +
+                              String(elc) + "," + String(pha) + "," + String(temp) + "," +
+                              String(humid);
+                pCharacteristic->setValue(data.c_str());
+                pCharacteristic->notify();
+                Serial.println(data);
+            }
         }
         delay(230);
     }
