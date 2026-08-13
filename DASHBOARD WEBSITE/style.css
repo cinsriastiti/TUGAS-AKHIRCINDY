@@ -17,7 +17,6 @@
     --text-color: #ffffff;
     --card-color: #ffffff;
 
-    /* untuk transisi */
     --tran-02: all 0.2s ease;
     --tran-03: all 0.3s ease;
     --tran-04: all 0.4s ease;
@@ -29,7 +28,6 @@ body {
     background: var(--body-color);
 }
 
-/* bagian menu sidebar */
 .sidebar {
     position: fixed;
     top: 0;
@@ -85,7 +83,6 @@ body {
     color: #999;
 }
 
-/* toggle kanna */
 .sidebar header .toggle {
     position: absolute;
     top: 50%;
@@ -120,7 +117,6 @@ body {
     opacity: 0;
 }
 
-/* meuu sidebar */
 .menu-bar {
     margin-top: 35px;
 }
@@ -272,7 +268,7 @@ body {
 .cards-bottom {
    margin-top: 15px;
     display: grid;
-    grid-template-columns: 2fr 1fr; /* kiri kecil, kanan besar */
+    grid-template-columns: 2fr 1fr; 
     gap: 15px;
 }
 
@@ -400,7 +396,7 @@ h2 {
 .tabel-rekomendasi {
     margin-top: 20px;
     overflow-y: auto;
-    max-height: 400px; /* tinggi maksimal, bisa scroll */
+    max-height: 400px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
