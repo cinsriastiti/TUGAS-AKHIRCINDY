@@ -2,7 +2,6 @@ const body = document.querySelector("body"),
     sidebar = body.querySelector(".sidebar"),
     toggle = body.querySelector(".toggle");
 
-//   bagian >
 toggle.addEventListener("click", () => {
     sidebar.classList.toggle("close");
 });
@@ -14,7 +13,7 @@ function showSection(id) {
     document.getElementById(id).style.display = 'block';
 }
 
-// setup firebase
+// setup si firebasenya
 const firebaseConfig = {
     apiKey: "AIzaSyAcgOQlwG7nNT1ULe3OA_1PSN_j6ObFOQc",
     authDomain: "ta-agrolytics.firebaseapp.com",
@@ -76,7 +75,7 @@ function listenLatestSession() {
             const sessionId = sessionDoc.id;
             const sessionData = sessionDoc.data();
 
-            // update map dari lokasi sesi
+            // updatetan map dari lokasi 
             if (sessionData.location) {
                 const lat = sessionData.location.latitude;
                 const lng = sessionData.location.longitude;
@@ -91,7 +90,7 @@ function listenLatestSession() {
                 currentSessionListener = null;
             }
 
-            // listen data realtime
+            // data dari si realtime
             currentSessionListener = db
                 .collection("agrolytics_monitoring")
                 .doc(sessionId)
@@ -112,7 +111,7 @@ function listenLatestSession() {
                     document.getElementById("val-ph").textContent = (last.ph ?? "--");
                     document.getElementById("val-ec").textContent = (last.ec ?? "--");
 
-                    const timestamp = last.timestamp?.toDate(); // konversi Firestore Timestamp ke JS Date
+                    const timestamp = last.timestamp?.toDate(); 
                     const formatted = timestamp ? timestamp.toLocaleString("id-ID", {
                         day: "2-digit",
                         month: "2-digit",
@@ -128,7 +127,6 @@ function listenLatestSession() {
 
 listenLatestSession();
 
-// simpan semua instance chart
 const charts = {};
 function buatChart(id, label, data, labels, color) {
     if (charts[id]) {
@@ -159,7 +157,7 @@ function buatChart(id, label, data, labels, color) {
                 x: {
                     title: {
                         display: true,
-                        text: "Jumlah Data", // ← label sumbu X
+                        text: "Jumlah Data",
                         color: "#707070",
                         font: { size: 11 }
                     }
@@ -168,7 +166,7 @@ function buatChart(id, label, data, labels, color) {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: "Nilai " + label, // ← label sumbu Y, otomatis sesuai parameter
+                        text: "Nilai " + label, 
                         color: "#707070",
                         font: { size: 11 }
                     }
@@ -256,7 +254,7 @@ function pilihRekomendasi(id) {
 
         document.getElementById("detail-rekomendasi").style.display = "block";
 
-        // ambil koordinat dari id_map "-6.800193,107.650674"
+    
         var koordinat = d.id_map.split(",");
         var lat = parseFloat(koordinat[0]);
         var lng = parseFloat(koordinat[1]);
